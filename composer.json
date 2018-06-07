@@ -1,5 +1,5 @@
 {
-    "name":         "IMHLabs/zf-propel-migrate",
+    "name":         "IMHLabs/zf-propel2-migrate",
     "description":  "IMHLabs Propel Data Source Migration - Zend Framework Routing",
     "type":         "library",
     "keywords": [
