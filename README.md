@@ -13,12 +13,12 @@ The suggested installation method is via [composer](http://getcomposer.org/):
 ## Console Commands
 
 ```
-php index.php propel build [NAMESPACE|[comma delimited NAMESPACES]                
+php index.php propel build [all}NAMESPACE|[comma delimited NAMESPACES]                
  - Build the model classes based on Propel XML schemas
 ```
 
 ```
-php index.php propel build-sql [NAMESPACE|[comma delimited NAMESPACES]            
+php index.php propel build-sql [all}NAMESPACE|[comma delimited NAMESPACES]            
  - Build SQL files
 ```
 
@@ -33,7 +33,7 @@ php index.php propel down [NAMESPACE|[comma delimited NAMESPACES]
 ```
 
 ```
-php index.php propel migrate [NAMESPACE|[comma delimited NAMESPACES]              
+php index.php propel migrate [all}NAMESPACE|[comma delimited NAMESPACES]              
  - Execute all pending migrations
 ```
 
@@ -83,7 +83,7 @@ php index.php propel sql-build [NAMESPACE|[comma delimited NAMESPACES]
 ```
 
 ```
-php index.php propel update [NAMESPACE|[comma delimited NAMESPACES]               
+php index.php propel update [all}NAMESPACE|[comma delimited NAMESPACES]               
  - Execute pending migrations, build SQL files, build Propel classes
 ```
 
@@ -91,4 +91,5 @@ php index.php propel update [NAMESPACE|[comma delimited NAMESPACES]
 php index.php propel migration [NAMESPACE|[comma delimited NAMESPACES]       
  - Generate diff classes
 ```
+
 

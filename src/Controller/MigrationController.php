@@ -47,9 +47,11 @@ class MigrationController extends AbstractActionController
      */
     public function buildAction()
     {
-        $namespaces = $this->_getNamespace();
+        $namespaces = $this->_getNamespace(true);
         foreach ($namespaces as $namespace) {
-            
+	        if ($namespace == 'default') {
+				continue;
+			}
             $migration = $this->_getMigrationClass($namespace);
             $migration->build();
         }
@@ -62,8 +64,11 @@ class MigrationController extends AbstractActionController
      */
     public function buildSqlAction()
     {
-        $namespaces = $this->_getNamespace();
+        $namespaces = $this->_getNamespace(true);
         foreach ($namespaces as $namespace) {
+			if ($namespace == 'default') {
+				continue;
+			}
             $migration = $this->_getMigrationClass($namespace);
             $migration->buildSql();
         }
@@ -76,11 +81,9 @@ class MigrationController extends AbstractActionController
      */
     public function diffAction()
     {
-        $namespaces = $this->_getNamespace();
-        foreach ($namespaces as $namespace) {
-            $migration = $this->_getMigrationClass($namespace);
-            $migration->diff($this->_getEnv());
-        }
+        $namespace = $this->_getNamespace();
+		$migration = $this->_getMigrationClass($namespace);
+		$migration->diff();
     }
 
     /**
@@ -90,11 +93,9 @@ class MigrationController extends AbstractActionController
      */
     public function downAction()
     {
-        $namespaces = $this->_getNamespace();
-        foreach ($namespaces as $namespace) {
-            $migration = $this->_getMigrationClass($namespace);
-            $migration->down();
-        }
+        $namespace = $this->_getNamespace();
+        $migration = $this->_getMigrationClass($namespace);
+        $migration->down();
     }
 
     /**
@@ -104,11 +105,14 @@ class MigrationController extends AbstractActionController
      */
     public function migrateAction()
     {
-        $namespaces = $this->_getNamespace();
+        $namespaces = $this->_getNamespace(true);
         foreach ($namespaces as $namespace) {
-            $migration = $this->_getMigrationClass($namespace);
-            $migration->migrate();
-        }
+			if ($namespace == 'default') {
+				continue;
+			}
+			$migration = $this->_getMigrationClass($namespace);
+			$migration->migrate();
+		}
     }
 
     /**
@@ -118,11 +122,9 @@ class MigrationController extends AbstractActionController
      */
     public function statusAction()
     {
-        $namespaces = $this->_getNamespace();
-        foreach ($namespaces as $namespace) {
-            $migration = $this->_getMigrationClass($namespace);
-            $migration->status();
-        }
+        $namespace = $this->_getNamespace();
+        $migration = $this->_getMigrationClass($namespace);
+        $migration->status();
     }
 
     /**
@@ -132,11 +134,9 @@ class MigrationController extends AbstractActionController
      */
     public function upAction()
     {
-        $namespaces = $this->_getNamespace();
-        foreach ($namespaces as $namespace) {
-            $migration = $this->_getMigrationClass($namespace);
-            $migration->up();
-        }
+        $namespace = $this->_getNamespace();
+        $migration = $this->_getMigrationClass($namespace);
+        $migration->up();
     }
 
     /**
@@ -146,8 +146,11 @@ class MigrationController extends AbstractActionController
      */
     public function updateAction()
     {
-        $namespaces = $this->_getNamespace();
+        $namespaces = $this->_getNamespace(true);
         foreach ($namespaces as $namespace) {
+			if ($namespace == 'default') {
+				continue;
+            }
             $migration = $this->_getMigrationClass($namespace);
             $migration->migrate();
             $migration->buildSql();
@@ -160,30 +163,25 @@ class MigrationController extends AbstractActionController
      *
      * @return void
      */
-    protected function _getNamespace()
+    protected function _getNamespace($allowMultiple = false)
     {
         $return = [];
         $request = $this->getRequest();
         $namespace = $request->getParam('namespace');
+        if (($allowMultiple)&&($namespace == 'all')) {
+            $config = $this->getConfig();
+            $connections = @$config ['propel'] ['database'] ['connections'];
+            return array_keys($connections);
+        }
         if (preg_match('/,/', $namespace)) {
             $return = explode(',', $namespace);
         } else {
-            $return = [
-                $namespace
-            ];
+            $return = [ $namespace ];
+        }
+        if (!$allowMultiple) {
+            return array_shift($allowMultiple);
         }
         return $return;
-    }
-
-    /**
-     * Get Module to update
-     *
-     * @return void
-     */
-    protected function _getEnv()
-    {
-        $request = $this->getRequest();
-        return ($request->getParam('env')) ?: null;
     }
 
     /**
@@ -197,4 +195,5 @@ class MigrationController extends AbstractActionController
         return \DataSourcePropel\Propel::migration($this->getConfig(), $namespace);
     }
 }
+
 
