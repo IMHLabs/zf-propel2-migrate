@@ -179,7 +179,7 @@ class MigrationController extends AbstractActionController
             $return = [ $namespace ];
         }
         if (!$allowMultiple) {
-            return array_shift($allowMultiple);
+            return array_shift($return);
         }
         return $return;
     }
